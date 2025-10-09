@@ -1,3 +1,5 @@
+print("how are you")
+
 def Report_Bug(login_id):
     print("--- Report Bug ---")
     title = input("Title: ")
