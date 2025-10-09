@@ -1,5 +1,3 @@
-print("how are you")
-
 def Report_Bug(login_id):
     print("--- Report Bug ---")
     title = input("Title: ")
@@ -117,3 +115,4 @@ def Role_Specification():
 
 print(" === Software Bug Tracking System (SBTS) ===")
 Role_Specification()
+print("Hello Asusen")
