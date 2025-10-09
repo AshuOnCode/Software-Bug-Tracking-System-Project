@@ -26,7 +26,17 @@ def View_my_Bugs(login_id):
     pass
 
 def Add_Comment(login_id):
-    pass
+    while True:
+        try:
+            id = int(input("Enter your tester id : "))
+            if id in bug_ids:
+                break
+            else:
+                print("Tester id not found !")
+                pass
+        except:
+            print("Enter your id again : ")
+        
 
 def Save_Exit(login_id):
     with open("bugs.csv", 'a', newline='') as file:
@@ -135,4 +145,3 @@ def Role_Specification():
 
 print(" === Software Bug Tracking System (SBTS) ===")
 Role_Specification()
-print("Hello Asusen")
