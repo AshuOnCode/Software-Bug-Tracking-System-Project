@@ -23,7 +23,15 @@ def Report_Bug(login_id):
     Tester(login_id)
 
 def View_my_Bugs(login_id):
-    pass
+    with open('bugs.csv','r',newline='') as file:
+        reader = csv.DictReader(file)
+        print("+", '-' * 5, '+', '-' * 20, '+', '-' * 9, '+', '-' * 8, '+', '-' * 13, '+', '-' * 12,'+',sep='')
+        print(f"| Id  |        Title       |Priority | Status | Reported_by |  Assignees |")
+        print("+",'-'*5,'+','-'*20,'+','-'*9,'+','-'*8,'+','-'*13,'+','-'*12,'+',sep='')
+        temp = "None"
+        for row in reader:
+            print(f"|{row["id"]:<5}|{row["Title"]:<20}|{row["Priority"]:<9}|{row["Status"]:<8}|{row["Reported_by"]:<13}|{temp:<12}|")
+            print("+",'-'*5,'+','-'*20,'+','-'*9,'+','-'*8,'+','-'*13,'+','-'*12,'+',sep='')
 
 def Add_Comment(login_id):
     while True:
