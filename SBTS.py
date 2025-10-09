@@ -1,11 +1,25 @@
+import csv
+import os.path
+
+with open("bugs.csv",'a',newline='') as file:
+    field = ['id','Title','Description','Priority','Status','Reported_by']
+    if os.path.getsize('bugs.csv') == 0:
+        writer = csv.DictWriter(file, fieldnames=field)
+        writer.writeheader()
+
 def Report_Bug(login_id):
     print("--- Report Bug ---")
+    bug_id = 1
     title = input("Title: ")
     description = input("Description: ")
     priority = int(input("Priority (1-5):"))
     status = "New"
-    print(f"Status: {status}")
-    bug = {"Title":title,"Description":description,"Priority":priority,"Status":status,"Assignees":set(),"Comments":[],"Reported_by":login_id,"Resolution_time":None}
+    Assignees = set()
+    Comments = []
+    Resolution_time = None
+    print(f"Status: {status}\n")
+    global bug
+    bug = {"id": bug_id, "Title": title, "Description": description, "Priority": priority, "Status": status,"Reported_by": login_id}
     Tester(login_id)
 
 def View_my_Bugs(login_id):
@@ -15,7 +29,13 @@ def Add_Comment(login_id):
     pass
 
 def Save_Exit(login_id):
-    pass
+    with open("bugs.csv", 'a', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=field)
+        writer.writerow(bug)
+    print("Saved\n")
+    ask = input("Role Switch? ")
+    if ask == "y":
+        Role_Specification()
 
 def Tester(login_id):
     choice = input("Choice: ")
