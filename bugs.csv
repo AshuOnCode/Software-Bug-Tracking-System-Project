@@ -1,4 +1,5 @@
 id,Title,Description,Priority,Status,Reported_by
-1,click button issue,click button is not working,3,New,ashu001
-1,link not working,the profile link is not working,2,New,ashu001
-1,app not responding,The app is not responding properly,4,New,ashutosh
+84,click button issue,click button is not working properly,4,New,tester1
+85,display issue,display is flickering sometimes,3,New,tester1
+86,login issue,otp not receiveing while loging in,5,New,tester1
+87,checking,checking working or not,1,New,tester1
