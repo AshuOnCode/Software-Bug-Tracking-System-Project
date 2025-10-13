@@ -132,10 +132,20 @@ def Tester():
             case _:
                 print("Invalid Choice! Choose Correct option...")
 
+def check_id():
+    while True:
+        id = input("Bug ID: ")
+        try:
+            id = int(id)
+            break
+        except ValueError:
+            print("Please Enter Valid id!")
+    return id
+
 def Claim_Bug():
     global bugs_data
     bugs_data = load_bugs()
-    id = input("Bug ID: ")
+    id = check_id()
     found = False
     for bug_id,bug_data in bugs_data.items():
         if bug_id == int(id):
@@ -151,7 +161,7 @@ def Claim_Bug():
 def Update_Status():
     global bugs_data
     bugs_data = load_bugs()
-    id = input("Bug ID: ")
+    id = check_id()
     found = False
     for bug_id,bug_data in bugs_data.items():
         if bug_id == int(id):
@@ -184,7 +194,7 @@ def View_Assigned_Bugs():
 def Resolve_Bug():
     global bugs_data
     bugs_data = load_bugs()
-    id = input("Bug ID: ")
+    id = check_id()
     found = False
     for bug_id,bug_data in bugs_data.items():
         if bug_id == int(id):
