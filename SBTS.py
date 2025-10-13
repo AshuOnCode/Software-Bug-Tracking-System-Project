@@ -59,12 +59,11 @@ def Report_Bug():
     description = input("Description: ")
     priority = int(input("Priority (1-5):"))
     status = "New"
-    print(f"Status: {status}\n")
     bugs_data[bug_id] = {"Title": title, "Description": description, "Priority": priority, "Status": status,"Reported_by": tester_login_id, "Comments": [tuple()], "Assignees": set(), 'Resolution_time': None}
     with open("bugs.csv", 'a', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=field)
         writer.writerow({"id": bug_id, "Title": title, "Description": description, "Priority": priority, "Status": status,"Reported_by": tester_login_id})
-    print("Bug Reported Successfully!")
+    print(f"Bug #{bug_id} reported! Status: {status}\n")
     Tester()
 
 def View_my_Bugs():
@@ -134,30 +133,98 @@ def Tester():
                 print("Invalid Choice! Choose Correct option...")
 
 def Claim_Bug():
-    pass
+    global bugs_data
+    bugs_data = load_bugs()
+    id = input("Bug ID: ")
+    found = False
+    for bug_id,bug_data in bugs_data.items():
+        if bug_id == int(id):
+            found = True
+            bug_data['Status'] = 'Assigned'
+            bug_data['Assignees'] = {developer_login_id}
+            print(f"Claimed! Status: {bug_data['Status']}. Assignees: {bug_data['Assignees']}")
+            break
+    if not found:
+        print("No such bugs Exist!")
+    Developer()
 
 def Update_Status():
-    pass
+    global bugs_data
+    bugs_data = load_bugs()
+    id = input("Bug ID: ")
+    found = False
+    for bug_id,bug_data in bugs_data.items():
+        if bug_id == int(id):
+            found = True
+            bug_data['Status'] = input("New Status: ")
+            print("Updated! Comment added.")
+            break
+    if not found:
+        print("No such bugs Exist!")
+    Developer()
 
 def View_Assigned_Bugs():
-    pass
+    global bugs_data,developer_login_id
+    bugs_data = load_bugs()
+    found = False
+    print("+", '-' * 5, '+', '-' * 22, '+', '-' * 10, '+', '-' * 10, '+', sep='')
+    print(f"| {'Id':^3} | {'Title':^20} | {'Priority':^8} | {'Status':^8} |")
+    print("+", '-' * 5, '+', '-' * 22, '+', '-' * 10, '+', '-' * 10, '+', sep='')
+    for bug_id, bug_data in bugs_data.items():
+        for assign in bug_data['Assignees']:
+            if assign == developer_login_id:
+                found = True
+                print(f"| {bug_id:^3} | {bug_data['Title']:^20} | {bug_data['Priority']:^8} | {bug_data['Status']:^8} |")
+                print("+", '-' * 5, '+', '-' * 22, '+', '-' * 10, '+', '-' * 10, '+', sep='')
+                break
+    if not found:
+        print("No bugs Assigneed yet!")
+    Developer()
 
 def Resolve_Bug():
-    pass
+    global bugs_data
+    bugs_data = load_bugs()
+    id = input("Bug ID: ")
+    found = False
+    for bug_id,bug_data in bugs_data.items():
+        if bug_id == int(id):
+            found = True
+            time = input("Days to Resolve: ")
+            bug_data['Resolution_time'] = time + " days"
+            print(f"Resolution time set: {time} days.")
+            break
+    if not found:
+        print("No such bugs Exist!")
+    Developer()
 
 def Developer():
-    choice = input("Choice: ")
-    match choice:
-        case '1':
-            Claim_Bug()
-        case '2':
-            Update_Status()
-        case '3':
-            View_Assigned_Bugs()
-        case '4':
-            Resolve_Bug()
-        case '5':
-            pass
+    while True:
+        print("\n--- Developer Menu ---")
+        print("1. Claim Bug")
+        print("2. Update Status")
+        print("3. View Assigned Bugs")
+        print("4. Resolve Bug")
+        print("5. Save & Exit")
+        choice = input("Choice: ")
+        match choice:
+            case '1':
+                Claim_Bug()
+                break
+            case '2':
+                Update_Status()
+                break
+            case '3':
+                View_Assigned_Bugs()
+                break
+            case '4':
+                Resolve_Bug()
+                break
+            case '5':
+                Save_Exit()
+                break
+            case _:
+                print("Invalid Choice! Choose Correct option...")
+
 
 def View_Dashboard():
     pass
@@ -172,18 +239,32 @@ def Search_Bugs():
     pass
 
 def Manager():
-    choice = input("Choice: ")
-    match choice:
-        case '1':
-            View_Dashboard()
-        case '2':
-            Assign_Bug()
-        case '3':
-            Generate_Report()
-        case '4':
-            Search_Bugs()
-        case '5':
-            pass
+    while True:
+        print("\n--- Manager Menu ---")
+        print("1. View Dashboard")
+        print("2. Assign Bug")
+        print("3. Generate Report")
+        print("4. Search Bugs")
+        print("5. Save & Exit")
+        choice = input("Choice: ")
+        match choice:
+            case '1':
+                View_Dashboard()
+                break
+            case '2':
+                Assign_Bug()
+                break
+            case '3':
+                Generate_Report()
+                break
+            case '4':
+                Search_Bugs()
+                break
+            case '5':
+                Save_Exit()
+                break
+            case _:
+                print("Invalid Choice! Choose Correct option...")
 
 def Role_Specification():
     Role = input("Enter Role (Tester/Developer/Manager): ").title()
@@ -209,26 +290,45 @@ def Role_Specification():
 
         case 'Developer':
             global developer_login_id
-            developer_login_id = input("Login as: ")
-            print("--- Developer Menu ---")
-            print("1. Claim Bug")
-            print("2. Update Status")
-            print("3. View Assigned Bugs")
-            print("4. Resolve Bug")
-            print("5. Save & Exit")
-            Developer()
+            users = load_users()
+            while True:
+                developer_login_id = input("Login as: ")
+                if developer_login_id not in users:
+                    print("No such user is Present!")
+                    continue
+                if users[developer_login_id]["role"] != 'Developer':
+                    print("No such Id is for Developer!")
+                    ask = input("Role Switch? ")
+                    if ask in "Yy":
+                        return Role_Specification()
+                    else:
+                        continue
+                else:
+                    Developer()
+                    break
+
         case 'Manager':
             global manager_login_id
-            manager_login_id = input("Login as: ")
-            print("--- Manager Menu ---")
-            print("1. View Dashboard")
-            print("2. Assign Bug")
-            print("3. Generate Report")
-            print("4. Search Bugs")
-            print("5. Save & Exit")
-            Manager()
+            users = load_users()
+            while True:
+                manager_login_id = input("Login as: ")
+                if manager_login_id not in users:
+                    print("No such user is Present!")
+                    continue
+                if users[manager_login_id]["role"] != 'Manager':
+                    print("No such Id is for Manager!")
+                    ask = input("Role Switch? ")
+                    if ask in "Yy":
+                        return Role_Specification()
+                    else:
+                        continue
+                else:
+                    Manager()
+                    break
+
         case _:
             print("No Such Role Exist")
+            print("Exiting SBTS")
 
 print("=== Software Bug Tracking System ===")
 Role_Specification()
