@@ -52,7 +52,7 @@ def bug_id_creation():
         return bug_id
 
 def Report_Bug():
-    print("--- Report Bug ---")
+    print("\n--- Report Bug ---")
     global tester_login_id, bugs_data
     bug_id = bug_id_creation()
     title = input("Title: ")
@@ -142,6 +142,14 @@ def check_id():
             print("Please Enter Valid id!")
     return id
 
+
+def data_re_write(bugs_data):
+    with open('bugs.csv','w',newline='') as files:
+        writer = csv.DictWriter(files, fieldnames=field)
+        writer.writeheader()
+        for bug_id,bug_data in bugs_data.items():
+            writer.writerow({"id": bug_id, "Title": bug_data['Title'], "Description": bug_data['Description'], "Priority": bug_data['Priority'], "Status": bug_data['Status'],"Reported_by": bug_data['Reported_by']})
+
 def Claim_Bug():
     global bugs_data
     bugs_data = load_bugs()
@@ -152,6 +160,7 @@ def Claim_Bug():
             found = True
             bug_data['Status'] = 'Assigned'
             bug_data['Assignees'] = {developer_login_id}
+            data_re_write(bugs_data)
             print(f"Claimed! Status: {bug_data['Status']}. Assignees: {bug_data['Assignees']}")
             break
     if not found:
@@ -167,6 +176,7 @@ def Update_Status():
         if bug_id == int(id):
             found = True
             bug_data['Status'] = input("New Status: ")
+            data_re_write(bugs_data)
             print("Updated! Comment added.")
             break
     if not found:
@@ -199,8 +209,8 @@ def Resolve_Bug():
     for bug_id,bug_data in bugs_data.items():
         if bug_id == int(id):
             found = True
-            time = input("Days to Resolve: ")
-            bug_data['Resolution_time'] = time + " days"
+            time = int(input("Days to Resolve: "))
+            bug_data['Resolution_time'] = time
             print(f"Resolution time set: {time} days.")
             break
     if not found:
@@ -236,10 +246,63 @@ def Developer():
                 print("Invalid Choice! Choose Correct option...")
 
 def View_Dashboard():
-    pass
+    print("\n--- Dashboard ---")
+    global bugs_data
+    bugs_data = load_bugs()
+    open_count = re_count = re_time = 0
+    priority = {}
+    for bug_id,bug_data in bugs_data.items():
+        if bug_data['Status'] == 'Resolved':
+            re_count += 1
+            if type(bug_data['Resolution_time']) == int:
+                re_time += bug_data['Resolution_time']
+        else:
+            open_count += 1
+        priority[bug_id] = int(bug_data['Priority'])
+    try:
+        avg_re_time = re_time/re_count
+    except:
+        avg_re_time = 0
+    priority = str(priority)
+    users = load_users()
+    bugs_per_dev = {}
+    for user_id in users.keys():
+        if user_id[0] == 'd':
+            count = 0
+            for bug_id,bug_data in bugs_data.items():
+                if user_id == bug_data['Assignees']:
+                    count+=1
+            bugs_per_dev[user_id] = count
+    print(f"Total Bugs: {len(bugs_data)}")
+    print(f"Open Bugs: {open_count}")
+    print(f"Resolved: {re_count} Avg Resolution Time: {avg_re_time} days")
+    print(f"Priority Distribution: {priority[1:-1]}")
+    print(f"Bugs per Developer: {str(bugs_per_dev)[1:-1]}")
+    Manager()
 
 def Assign_Bug():
-    pass
+    global bugs_data
+    bugs_data = load_bugs()
+    users = load_users()
+    id = check_id()
+    found = False
+    for bug_id, bug_data in bugs_data.items():
+        if bug_id == int(id):
+            found = True
+            while True:
+                assign = input("Assign Bug to: ")
+                bug_data['Assignees'] = {assign}
+                if assign in users:
+                    bug_data['Status'] = 'Assigned'
+                    data_re_write(bugs_data)
+                    print(f"Bug {bug_id} Assigned Successfully!")
+                    break
+                else:
+                    print("No Such user Exist! \nEnter Correct User id")
+            break
+    if not found:
+        print("No such bugs Exist!")
+    Manager()
 
 def Generate_Report():
     pass
