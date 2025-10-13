@@ -54,7 +54,7 @@ def bug_id_creation():
 def Report_Bug():
     print("--- Report Bug ---")
     global tester_login_id, bugs_data
-    bug_id = bug_id_creation()     # will change this later and made autogenerate id using random module.
+    bug_id = bug_id_creation()
     title = input("Title: ")
     description = input("Description: ")
     priority = int(input("Priority (1-5):"))
