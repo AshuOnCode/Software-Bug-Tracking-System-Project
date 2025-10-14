@@ -1,0 +1,4 @@
+Bug_id,Title,Description,Priority,Status,Reported_by,Reporter_name,Assignees,Assignees_name,Comments,Resolution_time
+26,Button issue,Click Button is not working,5,In Progress,tester1,Bob Tester,['dev1'],['Alice Dev'],"[('tester1', 'do it as soon as possible')]",
+27,display issue,display is flickering,4,Assigned,tester1,Bob Tester,['dev1'],['Alice Dev'],"[('tester1', 'you can take a little time')]",
+28,UI glitch,user interface is glitching,3,Assigned,tester1,Bob Tester,['dev1'],['Alice Dev'],"[('tester1', 'highly important')]",
