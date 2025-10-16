@@ -12,7 +12,10 @@ def load_users(filename='users.pkl'):
     else:
         users = {'tester1': {'role': 'Tester', 'name': 'Bob Tester', 'assigned_bugs': set()},
                  'dev1': {'role': 'Developer', 'name': 'Alice Dev', 'assigned_bugs': set()},
-                 "mgr1": {"role": "Manager", "name": "Charlie Manager", "assigned_bugs": set()}}
+                 "mgr1": {"role": "Manager", "name": "Ashutosh Manager", "assigned_bugs": set()},
+                 'tester2': {'role': 'Tester', 'name': 'Jhon Tester', 'assigned_bugs': set()},
+                 'dev2': {'role': 'Developer', 'name': 'Ali Dev', 'assigned_bugs': set()},
+                 "mgr2": {"role": "Manager", "name": "Akash Manager", "assigned_bugs": set()}}
         save_users(users)
         return users
 
@@ -275,7 +278,6 @@ def View_Dashboard():
         avg_re_time = re_time/re_count
     except:
         avg_re_time = 0
-    priority = str(priority)
     users = load_users()
     bugs_per_dev = {}
     for user_id,user_data in users.items():
@@ -285,7 +287,7 @@ def View_Dashboard():
     print(f"Total Bugs: {len(bugs_data)}")
     print(f"Open Bugs: {open_count}")
     print(f"Resolved: {re_count} Avg Resolution Time: {avg_re_time} days")
-    print(f"Priority Distribution: {priority[1:-1]}")
+    print(f"Priority Distribution: {str(priority)[1:-1]}")
     print(f"Bugs per Developer: {str(bugs_per_dev)[1:-1]}")
     Manager()
 
@@ -300,7 +302,7 @@ def Assign_Bug():
             found = True
             while True:
                 assign = input("Assign Bug to: ")
-                if assign in users:
+                if assign in users and users[assign]['role']=='Developer':
                     bug_data['Assignees'].add(assign)
                     bug_data['Status'] = 'Assigned'
                     users[assign]['assigned_bugs'].add(bug_id)
@@ -309,7 +311,7 @@ def Assign_Bug():
                     print(f"Bug {bug_id} Assigned Successfully!")
                     break
                 else:
-                    print("No Such user Exist! \nEnter Correct User id")
+                    print("No Such user Exist to assign Bugs! \nEnter Correct User id")
             break
     if not found:
         print("No such bugs Exist!")
